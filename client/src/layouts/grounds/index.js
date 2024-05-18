@@ -226,7 +226,7 @@ function ShowGrounds(props) {
                   description={`${ground.description}. (Available Facilities) Shower: ${ground.shower ? 'Available' : 'NA'}, Changing Room: ${ground.changing_room ? 'Available' : 'NA'}, Locker: ${ground.locker ? 'Available' : 'NA'}`}
                   action={{
                     type: "new",
-                    route: "/show-ground/" + ground.id,
+                    route: "/show-ground/" + ground._id,
                     color: "info",
                     label: "Book Slots",
                   }}
