@@ -1,0 +1,17 @@
+import { SIGN_IN, SIGN_UP, USER } from '../actions/SignAction';
+
+export default function (state = {}, action) {
+    switch (action.type) {
+        case SIGN_IN:
+            var signin = action.payload.data;
+            return { ...state, signin };
+        case SIGN_UP:
+            var signup = action.payload.data;
+            return { ...state, signup };
+        case USER:
+            var user_details = action.payload ? action.payload.data : {};
+            return { ...state, user_details };
+        default:
+            return state;
+    }
+}
