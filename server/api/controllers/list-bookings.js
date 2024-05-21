@@ -21,36 +21,36 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      // var [err, user] = await Helper.to(Helper.sessionAuth(this.req));
+      var [err, user] = await Helper.to(Helper.sessionAuth(this.req));
 
-      // if (err) {
-      //   throw err;
-      // }
+      if (err) {
+        throw err;
+      }
 
       var limit = this.req.param('limit');
 
       let match = {};
 
-      // if (user.role_type != "admin") {
-      //   match["user_id"] = user.id;
-      // }
+      if (user.role_type != "admin") {
+        match["user_id"] = user.id;
+      }
 
-      // if (user.role_type == "owner") {
-      //   var [err, grounds] = await Helper.to(Grounds.tb().find({
-      //     user_id: user.id
-      //   }).toArray());
+      if (user.role_type == "owner") {
+        var [err, grounds] = await Helper.to(Grounds.tb().find({
+          user_id: user.id
+        }).toArray());
 
-      //   const groundIds = await Helper.getArrayOfValues(grounds, "id");
+        const groundIds = await Helper.getArrayOfValues(grounds, "id");
 
-      //   match = {
-      //     $or: [{
-      //       user_id: user.id
-      //     },
-      //     {
-      //       ground_id: groundIds
-      //     }]
-      //   }
-      // }
+        match = {
+          $or: [{
+            user_id: user.id
+          },
+          {
+            ground_id: groundIds
+          }]
+        }
+      }
 
       var [err, bookings] = await Helper.to(Bookings.tb().aggregate([
         {

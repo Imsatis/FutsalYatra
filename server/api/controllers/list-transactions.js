@@ -27,25 +27,50 @@ module.exports = {
       }
 
 
+      let match = {};
       if (user.role_type == "admin") {
-        var [err, transactions] = await Helper.to(Transactions.find());
-      }else if(user.role_type == "owner") {
+
+      } else if (user.role_type == "owner") {
 
         var [err, grounds] = await Helper.to(Grounds.find({
           user_id: user.id
         }));
 
         const groundIds = await Helper.getArrayOfValues(grounds, "id");
-
-        var [err, transactions] = await Helper.to(Transactions.find({
+        match = {
           ground_id: groundIds
-        }));
-
-      }else {
-        var [err, transactions] = await Helper.to(Transactions.find({
+        }
+      } else {
+        match = {
           user_id: user.id
-        }));
+        }
       }
+
+      var [err, transactions] = await Helper.to(Transactions.tb().aggregate([
+        {
+          $match: match
+        },
+        {
+          $addFields: {
+            userId: {
+              $toObjectId: '$user_id'
+            }
+          }
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'userId',
+            foreignField: '_id',
+            as: 'user'
+          }
+        }, {
+          $unwind: {
+            path: '$user',
+            preserveNullAndEmptyArrays: false
+          }
+        }
+      ]).toArray());
 
 
       if (err) {

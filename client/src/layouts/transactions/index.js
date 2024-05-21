@@ -23,13 +23,10 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
 
-// Data
-import projectsTableData from "layouts/bookings/data/projectsTableData";
-
 import { useState, useEffect } from "react";
 import { Field, reduxForm, formValueSelector } from 'redux-form';
 import { connect } from 'react-redux';
-import { listUsers } from "../../actions/UserAction";
+import { listTransactions } from "../../actions/BookingAction";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -38,57 +35,57 @@ import MDAvatar from "components/MDAvatar";
 import MDBadge from "components/MDBadge";
 import moment from 'moment-timezone';
 
-function UserTable(props) {
+function TransactionTable(props) {
 
   const img_base_url = "http://localhost:1337/images/";
 
   useEffect(() => {
-    props.listUsers();
+    props.listTransactions();
   }, []);
 
   const columns = [
     { Header: "Name / Email", accessor: "email", align: "left" },
-    { Header: "Role Type", accessor: "role", align: "left" },
-    { Header: "Verified", accessor: "verified", align: "center" },
+    { Header: "Amount / ID", accessor: "amount", align: "left" },
+    { Header: "Status", accessor: "status", align: "center" },
     { Header: "Created At", accessor: "createdAt", align: "left" }
   ];
 
-  if (!props.list_users) {
+  if (!props.list_transactions) {
     return;
   }
 
-  const rows = props.list_users && props.list_users.map((user, index) => (
+  const rows = props.list_transactions && props.list_transactions.map((transaction, index) => (
     {
       email: (
         <MDBox display="flex" alignItems="center" lineHeight={1}>
-          <MDAvatar src={`${img_base_url}dummy-profile-${index % 5}.png`} name={user.name} size="sm" />
+          <MDAvatar src={`${img_base_url}dummy-profile-${index % 5}.png`} name={transaction.user.name} size="sm" />
           <MDBox ml={2} lineHeight={1}>
             <MDTypography display="block" variant="button" fontWeight="medium">
-              {user.name}
+              {transaction.user.name}
             </MDTypography>
-            <MDTypography variant="caption">{user.email}</MDTypography>
+            <MDTypography variant="caption">{transaction.user.email}</MDTypography>
           </MDBox>
         </MDBox>
       ),
-      role: (
+      amount: (
         <MDBox ml={2} lineHeight={1}>
           <MDTypography display="block" variant="button" fontWeight="medium">
-            {user.role_type}
+            {transaction.amount}
           </MDTypography>
-          <MDTypography variant="caption">Role of the User</MDTypography>
+          <MDTypography variant="caption">{transaction._id}</MDTypography>
         </MDBox>
       ),
-      verified: (
+      status: (
         <MDBox ml={-1}>
-          <MDBadge badgeContent={user.is_verfied ? "Yes" : "No"} color={user.is_verfied == true ? "success" : "error"} variant="gradient" size="sm" />
+          <MDBadge badgeContent={transaction.status} color={transaction.status == "success" ? "success" : "error"} variant="gradient" size="sm" />
         </MDBox>
       ),
       createdAt: (
         <MDBox lineHeight={1} textAlign="left">
           <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
-            {moment(user.createdAt).tz("Asia/Kathmandu").format("YYYY-MM-DD HH:mm:ss")}
+            {moment(transaction.createdAt).tz("Asia/Kathmandu").format("YYYY-MM-DD HH:mm:ss")}
           </MDTypography>
-          <MDTypography variant="caption">{"User account created at."}</MDTypography>
+          <MDTypography variant="caption">{"Transaction created at."}</MDTypography>
         </MDBox>
       ),
     }
@@ -111,7 +108,7 @@ function UserTable(props) {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Users
+                  Transaction
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>
@@ -133,14 +130,14 @@ function UserTable(props) {
 }
 
 function mapStateToProps(state) {
-  const { user } = state;
+  const { bookings, user } = state;
 
   return {
     user: user.user_details,
-    list_users: user.list_users
+    list_transactions: bookings.list_transactions
   }
 }
 
 export default reduxForm({
-  form: 'UserTable',
-})(connect(mapStateToProps, { listUsers })(UserTable));
+  form: 'TransactionTable',
+})(connect(mapStateToProps, { listTransactions })(TransactionTable));
