@@ -37,9 +37,9 @@ Coded by www.creative-tim.com
 
 // Material Dashboard 2 React layouts
 import Dashboard from "layouts/dashboard";
-import Tables from "layouts/tables";
-import Billing from "layouts/billing";
-import Notifications from "layouts/notifications";
+import Bookings from "layouts/bookings";
+import Transactions from "layouts/transactions";
+import Users from "layouts/users";
 import ShowGround from "layouts/show-ground";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
@@ -67,6 +67,30 @@ const routes = [
     component: <Grounds />,
   },
   {
+    type: "collapse",
+    name: "Bookings",
+    key: "bookings",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/bookings",
+    component: <Bookings />,
+  },
+  {
+    type: "collapse",
+    name: "Transactions",
+    key: "transactions",
+    icon: <Icon fontSize="small">Transaction</Icon>,
+    route: "/transactions",
+    component: <Transactions />,
+  },
+  {
+    type: "collapse",
+    name: "Users",
+    key: "users",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/users",
+    component: <Users />,
+  },
+  {
     type: "onlyRoute",
     name: "addListing",
     key: "add_listing",
@@ -76,52 +100,28 @@ const routes = [
     disabled: true
   },
   {
-    type: "collapse",
-    name: "Tables",
-    key: "tables",
-    icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/tables",
-    component: <Tables />,
-  },
-  {
-    type: "collapse",
-    name: "Billing",
-    key: "billing",
-    icon: <Icon fontSize="small">receipt_long</Icon>,
-    route: "/billing",
-    component: <Billing />,
-  },
-  {
-    type: "collapse",
-    name: "Notifications",
-    key: "notifications",
-    icon: <Icon fontSize="small">notifications</Icon>,
-    route: "/notifications",
-    component: <Notifications />,
-  },
-  {
-    type: "collapse",
+    type: "onlyRoute",
     name: "Show Ground",
     key: "show-ground",
     icon: <Icon fontSize="small">person</Icon>,
     route: "/show-ground/:ground_id",
-    component: <ShowGround />,
+    component: <ShowGround />
   },
   {
-    type: "collapse",
+    type: "onlyRoute",
     name: "Sign In",
     key: "sign-in",
     icon: <Icon fontSize="small">login</Icon>,
     route: "/authentication/sign-in",
-    component: <SignIn />,
+    component: <SignIn />
   },
   {
-    type: "collapse",
+    type: "onlyRoute",
     name: "Sign Up",
     key: "sign-up",
     icon: <Icon fontSize="small">assignment</Icon>,
     route: "/authentication/sign-up",
-    component: <SignUp />,
+    component: <SignUp />
   },
 ];
 

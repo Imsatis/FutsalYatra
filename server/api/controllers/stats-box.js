@@ -1,3 +1,6 @@
+const moment = require('moment-timezone');
+moment.tz.setDefault("UTC");
+
 module.exports = {
 
 
@@ -27,11 +30,9 @@ module.exports = {
         throw err;
       }
 
-
       if (user.role_type == "player") {
         throw "Invalid access!";
       }
-
 
       let total_match = {
         "status": "booked"
@@ -39,7 +40,7 @@ module.exports = {
 
       let upcoming_match = {
         start_time: {
-          '>=': new Date()
+          '>=': moment().tz("Asia/Kathmandu").toDate()
         },
         "status": "booked"
       }
@@ -97,7 +98,6 @@ module.exports = {
 
       let response = {
         total_bookings,
-        upcoming_bookings,
         upcoming_bookings,
         total_revenue: total_revenue && total_revenue.length > 0 ? total_revenue[0].amount : 0,
         total_players

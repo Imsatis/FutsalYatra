@@ -21,11 +21,3 @@ export function signUp(values, callback) {
         payload: request
     };
 }
-
-export function verify(values, callback) {
-    const request = callApi(`verify`, 'GET', values, callback);
-    return {
-        type: USER,
-        payload: request
-    };
-}

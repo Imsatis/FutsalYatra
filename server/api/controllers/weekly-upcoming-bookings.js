@@ -4,7 +4,7 @@ moment.tz.setDefault("UTC");
 module.exports = {
 
 
-  friendlyName: 'Weekly bookings',
+  friendlyName: 'Weekly upcoming bookings',
 
 
   description: '',
@@ -33,11 +33,13 @@ module.exports = {
         throw "Invalid access!";
       }
 
-      let last_7_day = moment().tz("Asia/Kathmandu").add(-6, 'days').startOf('day').toDate();
+      let today = moment().tz("Asia/Kathmandu").toDate();
+      let future_7_days = moment().tz("Asia/Kathmandu").add(6, 'days').startOf('day').toDate();
       let total_match = {
         "status": "booked",
-        createdAt: {
-          "$gte": last_7_day
+        start_time: {
+          "$gte": today,
+          "$lte": future_7_days
         }
       }
 
@@ -94,9 +96,8 @@ module.exports = {
 
       let bookArr = [];
       let labels = [];
-      let start_day = moment(last_7_day).tz("Asia/Kathmandu").day();
-      for (let i = 
-        0, start_loop=0, end_loop = 7; start_loop < end_loop;) {
+      let start_day = moment(today).tz("Asia/Kathmandu").day();
+      for (let i = 0, start_loop=0, end_loop = 7; start_loop < end_loop;) {
         let booking = total_bookings[i];
         let weekName = "";
 
@@ -110,7 +111,7 @@ module.exports = {
           i++;
         } else {
           bookArr.push(0);
-          weekName = moment(moment().tz("Asia/Kathmandu").day(start_day), "YYYY-MM-DD HH:mm:ss").format('dddd').substring(0, 3);
+          weekName = moment(moment().day(start_day), "YYYY-MM-DD HH:mm:ss").format('dddd').substring(0, 3);
         }
 
         labels.push(weekName);
@@ -121,7 +122,7 @@ module.exports = {
 
       let response = {
         labels: labels,
-        datasets: { label: "Bookings", data: bookArr },
+        datasets: { label: "Upcoming Bookings", data: bookArr },
       }
 
       return exits.success(Response.success('Stats box', response));

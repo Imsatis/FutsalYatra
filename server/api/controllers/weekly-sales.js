@@ -4,7 +4,7 @@ moment.tz.setDefault("UTC");
 module.exports = {
 
 
-  friendlyName: 'Weekly bookings',
+  friendlyName: 'Weekly sales',
 
 
   description: '',
@@ -35,7 +35,7 @@ module.exports = {
 
       let last_7_day = moment().tz("Asia/Kathmandu").add(-6, 'days').startOf('day').toDate();
       let total_match = {
-        "status": "booked",
+        "status": "success",
         createdAt: {
           "$gte": last_7_day
         }
@@ -45,7 +45,7 @@ module.exports = {
         total_match["user_id"] = user.id;
       }
 
-      var [err, total_bookings] = await Helper.to(Bookings.tb().aggregate([
+      var [err, total_sales] = await Helper.to(Transactions.tb().aggregate([
         {
           $match: total_match
         },
@@ -75,7 +75,7 @@ module.exports = {
               day: "$day",
               dayOfWeek: "$dayOfWeek",
               weekday: "$weekday"
-          },
+            },
             count: { $sum: 1 }
           }
         },
@@ -92,24 +92,23 @@ module.exports = {
         throw err;
       }
 
-      let bookArr = [];
+      let salesArr = [];
       let labels = [];
       let start_day = moment(last_7_day).tz("Asia/Kathmandu").day();
-      for (let i = 
-        0, start_loop=0, end_loop = 7; start_loop < end_loop;) {
-        let booking = total_bookings[i];
+      for (let i = 0, start_loop = 0, end_loop = 7; start_loop < end_loop;) {
+        let sales = total_sales[i];
         let weekName = "";
 
-        if(start_day > 6) {
+        if (start_day > 6) {
           start_day = 0;
         }
-        
-        if (i < total_bookings.length && start_day + 1 == booking._id.dayOfWeek) {
-          bookArr.push(booking.count);
-          weekName = booking._id.weekday;
+
+        if (i < total_sales.length && start_day + 1 == sales._id.dayOfWeek) {
+          salesArr.push(sales.count);
+          weekName = sales._id.weekday;
           i++;
         } else {
-          bookArr.push(0);
+          salesArr.push(0);
           weekName = moment(moment().tz("Asia/Kathmandu").day(start_day), "YYYY-MM-DD HH:mm:ss").format('dddd').substring(0, 3);
         }
 
@@ -121,7 +120,7 @@ module.exports = {
 
       let response = {
         labels: labels,
-        datasets: { label: "Bookings", data: bookArr },
+        datasets: { label: "Sales", data: salesArr },
       }
 
       return exits.success(Response.success('Stats box', response));

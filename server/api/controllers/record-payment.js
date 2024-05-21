@@ -31,7 +31,7 @@ module.exports = {
 
       let trans = {};
       let paymentStatus = "failed";
-      if (payemntType == "success" && trans.status == "COMPLETE") {
+      if (payemntType == "success") {
 
         if (!data) {
           throw "Invalid request!"
@@ -50,7 +50,7 @@ module.exports = {
       }));
 
       if (err) {
-        return err;
+        throw err;
       }
 
       return this.res.redirect('http://localhost:3000/bookings');

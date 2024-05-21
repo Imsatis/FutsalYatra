@@ -31,12 +31,12 @@ const store = createStoreWithMiddleware(reducers, window.__REDUX_DEVTOOLS_EXTENS
 
 const container = document.getElementById("app");
 const root = createRoot(container);
+const BASE_URL = "http://localhost:3000/";
 
 (async function () {
   var url = window.location.pathname;
   if (url.indexOf('/logout') > 0) {
-    // logoutUser();
-    alert("Logout")
+    window.location.assign(`${BASE_URL}authentication/sign-in`);
   } else {
     await verifyUser();
   }
@@ -74,13 +74,9 @@ async function verifyUser() {
         //If not logged in and not on sign and signup page
         if (url.indexOf('/authentication/sign-in') < 0 &&
           url.indexOf('/authentication/sign-up') < 0) {
-          window.location.assign("http://localhost:3000/authentication/sign-in");
+          window.location.assign(`${BASE_URL}authentication/sign-in`);
         }
       }
     });
   }
 }
-
-
-
-

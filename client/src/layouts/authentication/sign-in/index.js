@@ -42,7 +42,8 @@ import BasicLayout from "layouts/authentication/components/BasicLayout";
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 import { connect } from 'react-redux';
 import { Field, reduxForm, formValueSelector } from 'redux-form';
-import { signIn, verify } from "../../../actions/SignAction";
+import { signIn } from "../../../actions/SignAction";
+import { verify } from "../../../actions/UserAction";
 import Swal from 'sweetalert2';
 
 function Basic(props) {

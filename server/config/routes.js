@@ -56,6 +56,7 @@ module.exports.routes = {
   /**
    * Bookings
    */
+  'GET /list-bookings': { action: 'list-bookings' },
   'POST /book-ground': { action: 'book-ground' },
   'GET /booking/:booking_id/confirm': { action: 'confirm-booking' },
   'GET /get-booking-slots/:ground_id': { action: 'get-booking-slots' },
@@ -71,12 +72,12 @@ module.exports.routes = {
    * Transactions
   */
   'GET /payment/:type': { action: 'record-payment' },
-  'GET /list/transactions': { action: 'list-transactions' },
+  'GET /list-transactions': { action: 'list-transactions' },
 
   /**
   * Users
   */
-  'GET /list/users': { action: 'list-users' },
+  'GET /list-users': { action: 'list-users' },
 
 
   /**
@@ -84,6 +85,8 @@ module.exports.routes = {
    */
   'GET /stats-box': { action: 'stats-box' },
   'GET /weekly-bookings': { action: 'weekly-bookings' },
+  'GET /weekly-upcoming-bookings': { action: 'weekly-upcoming-bookings' },
+  'GET /weekly-sales': { action: 'weekly-sales' },
 
 
 };

@@ -145,10 +145,10 @@ function ShowGrounds(props) {
                       </InputAdornment>
                     ),
                   }}
-                  sx={{ width: 300 }}
+                  sx={{ width: 200 }}
                 />
 
-                <FormControl sx={{ m: 1, mt: 0, width: 300 }}>
+                <FormControl sx={{ m: 1, mt: 0, width: 200 }}>
                   <InputLabel id="demo-multiple-chip-label">Available Facilities</InputLabel>
                   <Select
                     sx={{ height: 45 }}
@@ -200,7 +200,7 @@ function ShowGrounds(props) {
                 </FormControl>
               </Box>
             </Grid>
-            <Grid item xs={12} sm={6} md>
+            <Grid sx={{"padding-top": "4px !important"}} item xs={12} sm={6} md>
               <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }} >
                 <Button variant="contained" href="/add-listing" style={{ color: "#fff" }}>
                   Add Listing

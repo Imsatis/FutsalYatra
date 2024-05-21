@@ -8,9 +8,6 @@ export default function (state = {}, action) {
         case SIGN_UP:
             var signup = action.payload.data;
             return { ...state, signup };
-        case USER:
-            var user_details = action.payload ? action.payload.data : {};
-            return { ...state, user_details };
         default:
             return state;
     }

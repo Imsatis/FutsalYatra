@@ -35,8 +35,21 @@ import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 import Projects from "layouts/dashboard/components/Projects";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 
-function Dashboard() {
+import { statsBox, weeklyBookings, weeklyUpcomingBookings, weeklySales } from "../../actions/StatsAction";
+import { useState, useEffect } from "react";
+import { Field, reduxForm, formValueSelector } from 'redux-form';
+import { connect } from 'react-redux';
+
+
+function Dashboard(props) {
   const { sales, tasks } = reportsLineChartData;
+
+  useEffect(() => {
+    props.statsBox();
+    props.weeklyBookings();
+    props.weeklyUpcomingBookings();
+    props.weeklySales();
+  }, []);
 
   return (
     <DashboardLayout>
@@ -48,12 +61,11 @@ function Dashboard() {
               <ComplexStatisticsCard
                 color="dark"
                 icon="weekend"
-                title="Bookings"
-                count={281}
+                title="Upcoming Bookings"
+                count={props.stats_box && props.stats_box.upcoming_bookings ? props.stats_box.upcoming_bookings : 0}
                 percentage={{
                   color: "success",
-                  amount: "+55%",
-                  label: "than lask week",
+                  label: "Total number of upcoming bookings",
                 }}
               />
             </MDBox>
@@ -62,12 +74,11 @@ function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 icon="leaderboard"
-                title="Today's Users"
-                count="2,300"
+                title="Total Bookings"
+                count={props.stats_box && props.stats_box.total_bookings ? props.stats_box.total_bookings : 0}
                 percentage={{
                   color: "success",
-                  amount: "+3%",
-                  label: "than last month",
+                  label: "Total number of bookings till date",
                 }}
               />
             </MDBox>
@@ -78,11 +89,10 @@ function Dashboard() {
                 color="success"
                 icon="store"
                 title="Revenue"
-                count="34k"
+                count={props.stats_box && props.stats_box.total_revenue ? props.stats_box.total_revenue : 0}
                 percentage={{
                   color: "success",
-                  amount: "+1%",
-                  label: "than yesterday",
+                  label: "Success transaction",
                 }}
               />
             </MDBox>
@@ -92,12 +102,11 @@ function Dashboard() {
               <ComplexStatisticsCard
                 color="primary"
                 icon="person_add"
-                title="Followers"
-                count="+91"
+                title="Players"
+                count={"+" + (props.stats_box && props.stats_box.total_players ? props.stats_box.total_players : 0)}
                 percentage={{
                   color: "success",
-                  amount: "",
-                  label: "Just updated",
+                  label: "Total registered players",
                 }}
               />
             </MDBox>
@@ -109,10 +118,10 @@ function Dashboard() {
               <MDBox mb={3}>
                 <ReportsBarChart
                   color="info"
-                  title="website views"
-                  description="Last Campaign Performance"
-                  date="campaign sent 2 days ago"
-                  chart={reportsBarChartData}
+                  title="Weekly Bookings"
+                  description="Last 7 days bookings"
+                  date="just updated"
+                  chart={props.weekly_bookings ? props.weekly_bookings : reportsBarChartData}
                 />
               </MDBox>
             </Grid>
@@ -120,14 +129,10 @@ function Dashboard() {
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="success"
-                  title="daily sales"
-                  description={
-                    <>
-                      (<strong>+15%</strong>) increase in today sales.
-                    </>
-                  }
+                  title="Weekly sales"
+                  description="Last 7 days sales"
                   date="updated 4 min ago"
-                  chart={sales}
+                  chart={props.weekly_sales ? props.weekly_sales : sales}
                 />
               </MDBox>
             </Grid>
@@ -135,10 +140,10 @@ function Dashboard() {
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="dark"
-                  title="completed tasks"
-                  description="Last Campaign Performance"
+                  title="Upcoming Bookings"
+                  description="Weekly upcoming bookings"
                   date="just updated"
-                  chart={tasks}
+                  chart={props.weekly_upcoming_bookings ? props.weekly_upcoming_bookings : tasks}
                 />
               </MDBox>
             </Grid>
@@ -160,4 +165,18 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+function mapStateToProps(state) {
+  const { stats, user } = state;
+
+  return {
+    stats_box: stats.stats_box,
+    weekly_bookings: stats.weekly_bookings,
+    weekly_upcoming_bookings: stats.weekly_upcoming_bookings,
+    weekly_sales: stats.weekly_sales,
+    user: user.user_details
+  }
+}
+
+export default reduxForm({
+  form: 'Dashboard',
+})(connect(mapStateToProps, { statsBox, weeklyBookings, weeklyUpcomingBookings, weeklySales })(Dashboard));
