@@ -37,7 +37,7 @@ import { deleteGround, listGrounds } from "../../../../actions/GroundAction";
 import { useSelector } from 'react-redux';
 
 
-function DefaultProjectCard({ image, label, title, description, action, authors, rating, id }) {
+function DefaultProjectCard({ image, label, title, description, action, authors, rating, id , user_id}) {
 
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
 
@@ -70,7 +70,6 @@ function DefaultProjectCard({ image, label, title, description, action, authors,
   ));
 
   const user = useSelector(state => state.user.user_details);
-  console.log(user)
   return (
     <Card
       onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}
@@ -83,7 +82,7 @@ function DefaultProjectCard({ image, label, title, description, action, authors,
       }}
     >
       {isTooltipOpen && <MDBox ml="auto" lineHeight={0} color={"black"} style={{ position: "absolute", top: "5px", right: "10px", zIndex: "1111", display: "grid" }}>
-       {user.role_type !== "player" ?  <>
+       {user.role_type === "admin" ||  user.id == user_id ?  <>
           <Tooltip title="Edit Ground" placement="right" enterDelay={500} leaveDelay={200}>
             <Icon sx={{ cursor: "pointer" }} fontSize="small" onClick={() => {
               window.location.assign(`/edit-ground/${id}`);

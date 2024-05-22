@@ -219,6 +219,7 @@ function ShowGrounds(props) {
                   label={ground.location}
                   title={ground.name}
                   id={ground._id}
+                  user_id={ground.user_id}
                   rating={ground.avg_rating}
                   description={`${ground.description}. (Available Facilities) Shower: ${ground.shower ? 'Available' : 'NA'}, Changing Room: ${ground.changing_room ? 'Available' : 'NA'}, Locker: ${ground.locker ? 'Available' : 'NA'}`}
                   action={{
