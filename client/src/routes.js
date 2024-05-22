@@ -46,6 +46,7 @@ import SignUp from "layouts/authentication/sign-up";
 import Grounds from "layouts/grounds";
 import AddListing from "layouts/grounds/components/addListing";
 import EditListing from "layouts/grounds/components/editListing";
+import EditProfile from "layouts/profile";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -90,6 +91,15 @@ const routes = [
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/users",
     component: <Users />,
+  },
+  {
+    type: "collapse",
+    name: "Profile",
+    key: "profile",
+    icon: <Icon fontSize="small">Profile</Icon>,
+    route: "/profile",
+    component: <EditProfile />,
+    disabled: true
   },
   {
     type: "onlyRoute",

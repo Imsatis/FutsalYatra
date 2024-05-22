@@ -2,6 +2,7 @@ import callApi from '../functions/callApi';
 export const USER = "USER";
 export const LIST_USERS = "LIST_USERS";
 export const CHANGE_ROLE = "CHANGE_ROLE";
+export const UPDATE_USER = "UPDATE_USER";
 
 
 export function setUserData(userData) {
@@ -39,6 +40,17 @@ export function changeRole(id, callback) {
     const request = callApi(`change-role/${id}`, 'PUT', {}, callback);
     return {
         type: CHANGE_ROLE,
+        payload: request
+    };
+}
+
+/**
+ * List bookings
+ */
+export function updateUser(values, callback) {
+    const request = callApi(`update-profile`, 'PUT', values, callback);
+    return {
+        type: UPDATE_USER,
         payload: request
     };
 }

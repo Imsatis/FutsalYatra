@@ -54,5 +54,5 @@ module.exports.session = {
   },
 
   saveUninitialized: false,
-  resave: false
+  resave: true
 };
