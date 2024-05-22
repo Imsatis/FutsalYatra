@@ -29,7 +29,7 @@ import projectsTableData from "layouts/bookings/data/projectsTableData";
 import { useState, useEffect } from "react";
 import { Field, reduxForm, formValueSelector } from 'redux-form';
 import { connect } from 'react-redux';
-import { listUsers } from "../../actions/UserAction";
+import { listUsers, changeRole } from "../../actions/UserAction";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -37,6 +37,8 @@ import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
 import MDBadge from "components/MDBadge";
 import moment from 'moment-timezone';
+import Switch from '@mui/material/Switch';
+import Swal from 'sweetalert2';
 
 function UserTable(props) {
 
@@ -50,7 +52,8 @@ function UserTable(props) {
     { Header: "Name / Email", accessor: "email", align: "left" },
     { Header: "Role Type", accessor: "role", align: "left" },
     { Header: "Verified", accessor: "verified", align: "center" },
-    { Header: "Created At", accessor: "createdAt", align: "left" }
+    { Header: "Created At", accessor: "createdAt", align: "left" },
+    { Header: "Make owner", accessor: "makeOwner", align: "left" }
   ];
 
   if (!props.list_users) {
@@ -91,6 +94,58 @@ function UserTable(props) {
           <MDTypography variant="caption">{"User account created at."}</MDTypography>
         </MDBox>
       ),
+      makeOwner: (
+        <MDBox lineHeight={1} textAlign="center">
+          <Switch
+          key={Math.random()}
+            onChange={(e) => {
+              Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, do it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: true
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  props.changeRole(user._id, (response) => {
+                    if (response.status === 'success') {
+                      Swal.fire({
+                        title: 'Success!',
+                        text: 'Ground deleted successfully.',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                      });
+
+                      props.listUsers();
+                    }
+                    if (response.status === 'error') {
+                      Swal.fire({
+                        title: 'Error!',
+                        text: response.message,
+                        icon: 'error',
+                        confirmButtonText: 'Okay'
+                      })
+                    }
+                  });
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                  // Optionally, handle the cancel case
+                  Swal.fire(
+                    'Cancelled',
+                    'Your action has been cancelled.',
+                    'error'
+                  );
+
+                  setTimeout(() => {
+                    props.listUsers();
+                  }, 0);
+                }
+              });
+            }}
+            aria-label='Make owner' disabled={user.role_type !== "player"} defaultChecked={user.role_type !== "player"} />
+        </MDBox>
+      )
     }
   ));
 
@@ -143,4 +198,4 @@ function mapStateToProps(state) {
 
 export default reduxForm({
   form: 'UserTable',
-})(connect(mapStateToProps, { listUsers })(UserTable));
+})(connect(mapStateToProps, { listUsers, changeRole })(UserTable));

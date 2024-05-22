@@ -80,6 +80,7 @@ module.exports.routes = {
   * Users
   */
   'GET /list-users': { action: 'list-users' },
+  'PUT /change-role/:user_id': { action: 'change-role' },
 
 
   /**
