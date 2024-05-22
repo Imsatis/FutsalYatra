@@ -55,19 +55,6 @@ module.exports = {
         throw "New password is required!";
       }
 
-      if (inputs.old_password) {
-
-        var [err, isMatch] = await Helper.to(Helper.comparePasswords(inputs.old_password, user.password));
-
-        if (err) {
-          throw err;
-        }
-
-        if (!isMatch) {
-          throw "Invalid password."
-        }
-      }
-
       inputs.name = Helper.removeUrls(Helper.sanitizeHTML(Helper.html(inputs.name)));
       inputs.email = inputs.email.toLowerCase().trim();
 
@@ -85,13 +72,36 @@ module.exports = {
         throw "Email already exists.";
       }
 
+      if (inputs.old_password) {
+
+        var [err, getUser] = await Helper.to(Users.findOne({
+          id: user.id
+        }));
+
+        var [err, isMatch] = await Helper.to(Helper.comparePasswords(inputs.old_password, getUser.password));
+
+        if (err) {
+          throw err;
+        }
+
+        if (!isMatch) {
+          throw "Invalid password."
+        }
+      }
+
       let update = {
         name: inputs.name,
         email: inputs.email
       }
 
       if (inputs.new_password) {
-        update["password"] = inputs.new_password;
+        var [err, hashedPassword] = await Helper.to(Helper.hashPassword(inputs.new_password));
+
+        if (err) {
+          throw err;
+        }
+
+        update["password"] = hashedPassword;
       }
 
       var [err, userUpdate] = await Helper.to(Users.updateOne({ id: user.id }).set(update));

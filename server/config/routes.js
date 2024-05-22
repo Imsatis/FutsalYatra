@@ -39,6 +39,7 @@ module.exports.routes = {
   'POST /sign-in': { action: 'sign-in' },
   'POST /sign-up': { action: 'sign-up' },
   'GET /verify': { action: 'verify-session' },
+  'GET /logout': { action: 'logout' },
 
 
   'GET /images/:filename': {
