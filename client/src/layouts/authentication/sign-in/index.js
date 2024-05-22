@@ -161,7 +161,7 @@ function Basic(props) {
   function onSubmit(values) {
     props.signIn(values, (response) => {
       if (response.status === 'success') {
-        if(response.data.role_type && response.data.role_type === "admin") {
+        if(response.data.role_type && (response.data.role_type === "admin" || response.data.role_type === "owner")) {
           window.location.href = "/dashboard";
         }else {
           window.location.href = "/grounds";
