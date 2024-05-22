@@ -61,7 +61,7 @@ module.exports = {
             const isMatch = await bcrypt.compare(inputPassword, hashedPassword);
             return isMatch;
         } catch (error) {
-            throw new Error('Error comparing passwords');
+            throw new Error('Invalid Credentials!');
         }
     },
 

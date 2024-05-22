@@ -42,7 +42,7 @@ module.exports = {
       }
 
 
-      var [err, isMatch] = await Helper.to(Helper.hashPassword(inputs.password), user.password);
+      var [err, isMatch] = await Helper.to(Helper.comparePasswords(inputs.password, user.password));
 
       if (err) {
         throw err;
@@ -60,7 +60,7 @@ module.exports = {
       delete user.password;
       this.req.session.user = Helper.encrypt(JSON.stringify(user));
       this.req.session.save();//Save the session immediately to ensure changes are persistent;
-      return exits.success(Response.success("Sesssion created successfully."));
+      return exits.success(Response.success("Sesssion created successfully.", {role_type: user.role_type}));
     } catch (error) {
       sails.log(error);
       return exits.invalid(Response.error(Helper.errorMessage(error)));
