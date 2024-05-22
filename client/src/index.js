@@ -21,11 +21,12 @@ import App from "App";
 // Material Dashboard 2 React Context Provider
 import { MaterialUIControllerProvider } from "context";
 
-import { Provider } from 'react-redux';
+import { Provider, useDispatch } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import promise from 'redux-promise';
 import reducers from './reducers/';
 import callApi from './functions/callApi';
+import { setUserData } from './actions/UserAction';
 const createStoreWithMiddleware = applyMiddleware(promise)(createStore);
 const store = createStoreWithMiddleware(reducers, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
@@ -38,7 +39,7 @@ const BASE_URL = "http://localhost:3000/";
   if (url.indexOf('/logout') > 0) {
     window.location.assign(`${BASE_URL}authentication/sign-in`);
   } else {
-    await verifyUser();
+    await VerifyUser();
   }
 
   setTimeout(() => {
@@ -54,7 +55,7 @@ const BASE_URL = "http://localhost:3000/";
   }, 100);
 })();
 
-async function verifyUser() {
+async function VerifyUser() {
   var url = window.location.pathname;
   var host = window.location.host;
   if (url.indexOf('/list-grounds') < 0) {
@@ -66,10 +67,8 @@ async function verifyUser() {
         else if (url.indexOf('signin') > 0 || url.indexOf('signup') > 0) {
           window.location.assign('/app/');
         }
-      } else if (response.status === 'blocked') {
-        if (url.indexOf('/blocked') < 0) {
-          window.location.assign('/blocked/');
-        }
+
+        store.dispatch(setUserData(response.data));
       } else {
         //If not logged in and not on sign and signup page
         if (url.indexOf('/authentication/sign-in') < 0 &&

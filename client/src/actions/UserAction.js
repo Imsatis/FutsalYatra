@@ -4,6 +4,15 @@ export const LIST_USERS = "LIST_USERS";
 export const CHANGE_ROLE = "CHANGE_ROLE";
 
 
+export function setUserData(userData) {
+    return {
+        type: USER,
+        payload: {
+            data: userData
+        }
+    }
+}
+
 export function verify(values, callback) {
     const request = callApi(`verify`, 'GET', values, callback);
     return {

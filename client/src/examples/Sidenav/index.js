@@ -38,6 +38,7 @@ import SidenavCollapse from "examples/Sidenav/SidenavCollapse";
 // Custom styles for the Sidenav
 import SidenavRoot from "examples/Sidenav/SidenavRoot";
 import sidenavLogoLabel from "examples/Sidenav/styles/sidenav";
+import { useSelector } from 'react-redux';
 
 // Material Dashboard 2 React context
 import {
@@ -83,8 +84,19 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
     return () => window.removeEventListener("resize", handleMiniSidenav);
   }, [dispatch, location]);
 
+  const user = useSelector(state => state.user.user_details);
+
   // Render all the routes from the routes.js (All the visible items on the Sidenav)
   const renderRoutes = routes.map(({ type, name, icon, title, noCollapse, key, href, route }) => {
+
+    if(user.role_type === "player" && (key == "dashboard" || key == "addListing" || key == "editListing")) {
+      return;
+    }
+
+    if(user.role_type === "owner" && key == "users" ) {
+      return;
+    }
+
     let returnValue;
 
     if (type === "collapse") {
@@ -135,7 +147,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           }
         />
       );
-    }else {}
+    } else { }
 
     return returnValue;
   });
@@ -161,7 +173,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           </MDTypography>
         </MDBox>
         <MDBox component={NavLink} to="/" display="flex" alignItems="center">
-          {brand && <MDBox component="img" sx={{"border-radius": "50%"}} src={brand} alt="Brand" width="5rem" />}
+          {brand && <MDBox component="img" sx={{ "border-radius": "50%" }} src={brand} alt="Brand" width="5rem" />}
           <MDBox
             width={!brandName && "100%"}
             sx={(theme) => sidenavLogoLabel(theme, { miniSidenav })}

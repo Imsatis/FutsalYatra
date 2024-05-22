@@ -161,7 +161,12 @@ function Basic(props) {
   function onSubmit(values) {
     props.signIn(values, (response) => {
       if (response.status === 'success') {
-        window.location.href = "/dashboard";
+        if(response.data.role_type && response.data.role_type === "admin") {
+          window.location.href = "/dashboard";
+        }else {
+          window.location.href = "/grounds";
+        }
+
       }
       if (response.status === 'error') {
         Swal.fire({

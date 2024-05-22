@@ -70,7 +70,7 @@ const getQueryParams = (obj) => {
 
 
 function ShowGrounds(props) {
-
+  const { user } = props;
   useEffect(() => {
     props.listGrounds();
   }, []);
@@ -111,7 +111,7 @@ function ShowGrounds(props) {
     props.listGrounds(qParam);
 
     console.log("qParam", qParam)
-}, [searchQuery, availFacilities, sortOrder]);
+  }, [searchQuery, availFacilities, sortOrder]);
 
   const img_base_url = "http://localhost:1337/images/";
   return (
@@ -200,18 +200,14 @@ function ShowGrounds(props) {
                 </FormControl>
               </Box>
             </Grid>
-            <Grid sx={{"padding-top": "4px !important"}} item xs={12} sm={6} md>
+            {user.role_type !== "player" ? <Grid sx={{ "padding-top": "4px !important" }} item xs={12} sm={6} md>
               <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }} >
                 <Button variant="contained" href="/add-listing" style={{ color: "#fff" }}>
                   Add Listing
                 </Button>
               </Box>
-              {/* <MDBox style={{ float: "right" }} mb={1}>
-                <Button variant="contained" href="/add-listing" style={{ color: "#fff" }}>
-                  Add Listing
-                </Button>
-              </MDBox> */}
-            </Grid>
+            </Grid> : ""}
+
           </Grid>
         </Box>
         <MDBox p={2}>
