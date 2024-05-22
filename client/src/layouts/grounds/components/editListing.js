@@ -28,27 +28,76 @@ import { connect } from 'react-redux';
 import { Field, reduxForm, formValueSelector } from 'redux-form';
 import { useNavigate } from 'react-router-dom';
 
-import Grid from "@mui/material/Grid";
-
 import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
 import Checkbox from "@mui/material/Checkbox";
-import { addGround } from "../../../actions/GroundAction";
+import { editGround, getGround } from "../../../actions/GroundAction";
+import { useParams } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+
+
 import Swal from 'sweetalert2';
-import React, { useState, useEffect } from 'react';
-import { Input } from '@mui/material';
 
+var groundId = "";
 
-// Authentication layout components
-import BasicLayout from "layouts/authentication/components/BasicLayout";
-function AddListing(props) {
+const fetchFileFromUrl = async (url, fileName) => {
+    const response = await fetch(url);
+    const data = await response.blob();
+    return new File([data], fileName, { type: data.type });
+};
+
+function EditListing(props) {
+    const { ground_id } = useParams();
     const [file, setFile] = useState(null);
     const navigate = useNavigate();
+    const fileInputRef = useRef(null);
 
     useEffect(() => {
         console.log("File has been set.")
     }, [file]);
+
+    useEffect(() => {
+        if (ground_id) {
+            props.getGround(ground_id);
+            groundId = ground_id;
+        }
+    }, [ground_id]);
+
+    useEffect(() => {
+        if (props.ground_details) {
+            props.initialize({
+                name: props.ground_details.name,
+                location: props.ground_details.location,
+                price: props.ground_details.price,
+                shower: props.ground_details.shower,
+                changing_room: props.ground_details.changing_room,
+                locker: props.ground_details.locker,
+                description: props.ground_details.description,
+            });
+        }
+    }, [props.ground_details]);
+
+    useEffect(() => {
+        const initializeFileInput = async () => {
+            const img_base_url = "http://localhost:1337/images/";
+            const file = await fetchFileFromUrl(`${img_base_url}${props.ground_details.ground_image}`, 'ground_img.png'); // Example file name
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            fileInputRef.current.files = dataTransfer.files;
+            // Trigger the change event to handle file change
+            const event = new Event('change', { bubbles: true });
+            fileInputRef.current.dispatchEvent(event);
+        };
+
+        if (props.ground_details && props.ground_details.ground_image) {
+            initializeFileInput();
+        }
+    }, [props.ground_details]);
+
+    if (!props.ground_details) {
+        return;
+    }
 
     return (
         <DashboardLayout>
@@ -56,11 +105,11 @@ function AddListing(props) {
             <Header>
                 <MDBox pt={2} px={2} lineHeight={1.25}>
                     <MDTypography variant="h6" fontWeight="medium">
-                        Add Ground
+                        Edit Ground
                     </MDTypography>
                     <MDBox mb={1}>
                         <MDTypography variant="button" color="text">
-                            Add ground list
+                            Edit ground list
                         </MDTypography>
                     </MDBox>
                 </MDBox>
@@ -135,7 +184,7 @@ function AddListing(props) {
                             <MDTypography display="block" variant="button" fontWeight="medium">
                                 Ground Image
                             </MDTypography>
-                            <MDInput name="ground_img" type="file" onChange={_handleImageChange}
+                            <MDInput name="ground_img" type="file" onChange={_handleImageChange} inputRef={fileInputRef}
                                 fullWidth />
                         </MDBox>
 
@@ -182,8 +231,8 @@ function AddListing(props) {
 
                         </MDBox>
                         <MDBox mt={4} mb={1}>
-                            <MDButton onClick={props.handleSubmit(onSubmit)} variant="gradient" color="info" fullWidth>
-                                Add
+                            <MDButton onClick={props.handleSubmit(OnSubmit)} variant="gradient" color="info" fullWidth>
+                                Update
                             </MDButton>
                         </MDBox>
                     </MDBox>
@@ -193,6 +242,35 @@ function AddListing(props) {
         </DashboardLayout>
     );
 
+    function OnSubmit(values) {
+        const formData = new FormData();
+        for (var key in values) {
+            formData.append(key, values[key]);
+        }
+        formData.append('ground_image', file);
+        props.editGround(groundId, formData, (response) => {
+            if (response.status === 'success') {
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Ground udpated successfully.',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+
+               setTimeout(() => {
+                navigate("/grounds")
+               }, 4000);
+            }
+            if (response.status === 'error') {
+                Swal.fire({
+                    title: 'Error!',
+                    text: response.message,
+                    icon: 'error',
+                    confirmButtonText: 'Okay'
+                })
+            }
+        });
+    }
 
     function _handleImageChange(e) {
         e.preventDefault();
@@ -213,58 +291,18 @@ function AddListing(props) {
             setFile(image);
         }
     }
-
-    function onSubmit(values) {
-        const formData = new FormData();
-        for (var key in values) {
-            formData.append(key, values[key]);
-        }
-
-        if(!file) {
-            return Swal.fire({
-                title: 'Error!',
-                text: "Ground Image is required",
-                icon: 'error',
-                confirmButtonText: 'Okay'
-            })
-        }
-        formData.append('ground_image', file);
-        props.addGround(formData, (response) => {
-            if (response.status === 'success') {
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Ground added successfully.',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                });
-
-                navigate("/grounds")
-            }
-            if (response.status === 'error') {
-                Swal.fire({
-                    title: 'Error!',
-                    text: response.message,
-                    icon: 'error',
-                    confirmButtonText: 'Okay'
-                })
-            }
-        });
-    }
 }
 
 
-
 function mapStateToProps(state) {
-    // const { email_address } = state;
-    // const smtp_provider = selector(state, 'smtp_provider');
+    const { grounds, user } = state;
+
     return {
-        // smtp_setting: email_address.smtp_setting,
-        // smtp_provider
+        ground_details: grounds.ground_details,
+        user: user.user_details
     }
 }
 
 export default reduxForm({
-    form: 'AddListing',
-})(connect(mapStateToProps, { addGround })(AddListing));
-
-const selector = formValueSelector('AddListing') // <-- same as form name
+    form: 'EditListing',
+})(connect(mapStateToProps, { getGround, editGround })(EditListing));

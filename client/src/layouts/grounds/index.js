@@ -222,6 +222,7 @@ function ShowGrounds(props) {
                   image={img_base_url + ground.ground_image}
                   label={ground.location}
                   title={ground.name}
+                  id={ground._id}
                   rating={ground.avg_rating}
                   description={`${ground.description}. (Available Facilities) Shower: ${ground.shower ? 'Available' : 'NA'}, Changing Room: ${ground.changing_room ? 'Available' : 'NA'}, Locker: ${ground.locker ? 'Available' : 'NA'}`}
                   action={{

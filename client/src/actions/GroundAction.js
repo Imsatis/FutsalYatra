@@ -1,6 +1,8 @@
 import callApi from '../functions/callApi';
 import callApiMultipart from '../functions/callApiMultipart';
 export const Add_GROUND = "Add_GROUND";
+export const EDIT_GROUND = "EDIT_GROUND";
+export const DELETE_GROUND = "DELETE_GROUND";
 export const LIST_GROUNDS = "LIST_GROUNDS";
 export const GET_GROUND = "GET_GROUND";
 export const BOOK_GROUND = "BOOK_GROUND";
@@ -16,6 +18,28 @@ export function addGround(values, callback) {
     const request = callApiMultipart(`add-ground`, 'POST', values, callback);
     return {
         type: Add_GROUND,
+        payload: request
+    };
+}
+
+/**
+ * Edit grounds
+ */
+export function editGround(id, values, callback) {
+    const request = callApiMultipart(`edit-ground/${id}`, 'PUT', values, callback);
+    return {
+        type: EDIT_GROUND,
+        payload: request
+    };
+}
+
+/**
+ * Edit grounds
+ */
+export function deleteGround(id, callback) {
+    const request = callApiMultipart(`delete-ground/${id}`, 'DELETE', {}, callback);
+    return {
+        type: DELETE_GROUND,
         payload: request
     };
 }

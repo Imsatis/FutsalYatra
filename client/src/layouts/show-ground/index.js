@@ -17,29 +17,16 @@ Coded by www.creative-tim.com
 import Grid from "@mui/material/Grid";
 import Divider from "@mui/material/Divider";
 
-// @mui icons
-import FacebookIcon from "@mui/icons-material/Facebook";
-import TwitterIcon from "@mui/icons-material/Twitter";
-import InstagramIcon from "@mui/icons-material/Instagram";
-
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-import ProfileInfoCard from "examples/Cards/InfoCards/ProfileInfoCard";
-import ProfilesList from "examples/Lists/ProfilesList";
-import DefaultProjectCard from "examples/Cards/ProjectCards/DefaultProjectCard";
 
 // Overview page components
 import Header from "layouts/show-ground/components/Header";
-import PlatformSettings from "layouts/show-ground/components/PlatformSettings";
-
-// Data
-import profilesListData from "layouts/show-ground/data/profilesListData";
 
 import { getGround, bookGround, getBookingSlots, addReview, listReviews } from "../../actions/GroundAction";
 import { Field, reduxForm, formValueSelector } from 'redux-form';
@@ -67,15 +54,7 @@ function GroundDetail(props) {
     if (ground_id) {
       props.getGround(ground_id);
       props.listReviews(ground_id);
-    }
-  }, [ground_id]);
-
-  useEffect(() => {
-    if (ground_id) {
-      // setInterval(function () {
       props.getBookingSlots(ground_id);
-      // }, 10000);
-      ;
     }
   }, [ground_id]);
 

@@ -45,6 +45,7 @@ import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 import Grounds from "layouts/grounds";
 import AddListing from "layouts/grounds/components/addListing";
+import EditListing from "layouts/grounds/components/editListing";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -97,6 +98,15 @@ const routes = [
     icon: <Icon fontSize="small">Add Listing</Icon>,
     route: "/add-listing",
     component: <AddListing />,
+    disabled: true
+  },
+  {
+    type: "onlyRoute",
+    name: "editListing",
+    key: "edit_listing",
+    icon: <Icon fontSize="small">Edit Listing</Icon>,
+    route: "/edit-ground/:ground_id",
+    component: <EditListing />,
     disabled: true
   },
   {

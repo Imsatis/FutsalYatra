@@ -50,6 +50,8 @@ module.exports.routes = {
    * Grounds
    */
   'POST /add-ground': { action: 'add-ground' },
+  'PUT /edit-ground/:ground_id': { action: 'update-ground' },
+  'DELETE /delete-ground/:ground_id': { action: 'delete-ground' },
   'GET /list-grounds': { action: 'list-grounds' },
   'GET /get-ground/:ground_id': { action: 'get-ground' },
 

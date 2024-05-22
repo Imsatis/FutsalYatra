@@ -32,8 +32,11 @@ import MDAvatar from "components/MDAvatar";
 import { Rating } from '@smastrom/react-rating';
 import Icon from "@mui/material/Icon";
 import React, { useState } from 'react';
+import Swal from 'sweetalert2';
+import { deleteGround, listGrounds } from "../../../../actions/GroundAction";
 
-function DefaultProjectCard({ image, label, title, description, action, authors, rating }) {
+
+function DefaultProjectCard({ image, label, title, description, action, authors, rating, id }) {
 
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
 
@@ -79,13 +82,55 @@ function DefaultProjectCard({ image, label, title, description, action, authors,
       {isTooltipOpen && <MDBox ml="auto" lineHeight={0} color={"black"} style={{ position: "absolute", top: "5px", right: "10px", zIndex: "1111", display: "grid" }}>
         <>
           <Tooltip title="Edit Ground" placement="right" enterDelay={500} leaveDelay={200}>
-            <Icon sx={{ cursor: "pointer" }} fontSize="small">
+            <Icon sx={{ cursor: "pointer" }} fontSize="small" onClick={() => {
+              window.location.assign(`/edit-ground/${id}`);
+            }}>
               edit
             </Icon>
           </Tooltip>
 
           <Tooltip title="Delete Ground" placement="right" enterDelay={500} leaveDelay={200}>
-            <Icon sx={{ cursor: "pointer" }} fontSize="small">
+            <Icon sx={{ cursor: "pointer" }} fontSize="small" onClick={() => {
+              Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, do it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: true
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  deleteGround(id, (response) => {
+                    if (response.status === 'success') {
+                      Swal.fire({
+                        title: 'Success!',
+                        text: 'Ground deleted successfully.',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                      });
+
+                      listGrounds();
+                    }
+                    if (response.status === 'error') {
+                      Swal.fire({
+                        title: 'Error!',
+                        text: response.message,
+                        icon: 'error',
+                        confirmButtonText: 'Okay'
+                      })
+                    }
+                  });
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                  // Optionally, handle the cancel case
+                  Swal.fire(
+                    'Cancelled',
+                    'Your action has been cancelled.',
+                    'error'
+                  );
+                }
+              });
+            }}>
               delete
             </Icon>
           </Tooltip>

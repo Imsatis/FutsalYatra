@@ -51,6 +51,10 @@ function Dashboard(props) {
     props.weeklySales();
   }, []);
 
+  if (!props.stats_box || !props.weekly_bookings || !props.weekly_upcoming_bookings || !props.weekly_sales) {
+    return;
+  }
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
