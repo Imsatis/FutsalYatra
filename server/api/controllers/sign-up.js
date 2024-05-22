@@ -34,15 +34,15 @@ module.exports = {
 
       //SuFM9#PtP4S@u9hl
 
-      if(!inputs.name) {
+      if (!inputs.name) {
         throw "Name is required.";
       }
 
-      if(!inputs.email) {
+      if (!inputs.email) {
         throw "Email is required.";
       }
 
-      if(!inputs.password) {
+      if (!inputs.password) {
         throw "Password is required.";
       }
 
@@ -79,15 +79,14 @@ module.exports = {
         throw err;
       }
 
+      var [err, mail] = await Helper.to(Email.verifyEmail(user));
+
       /**
        * 
        * Need to implement verfication email
        */
 
-      delete user.password;
-      this.req.session.user = Helper.encrypt(JSON.stringify(user));
-      this.req.session.save();//Save the session immediately to ensure changes are persistent;
-      return exits.success(Response.success("User created successfully."));
+      return exits.invalid(Response.error(Helper.errorMessage("An verification email has been sent to your email, Please verify it first!")));
     } catch (error) {
       sails.log(error);
       return exits.invalid(Response.error(Helper.errorMessage(error)));

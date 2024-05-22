@@ -52,6 +52,10 @@ module.exports = {
         throw "Invalid password."
       }
 
+      if(!user.is_verfied){
+        throw "Please verify your email first!"
+      }
+
       /**
        * 
        * Need to implement verfication email

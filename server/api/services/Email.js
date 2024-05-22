@@ -125,5 +125,39 @@ module.exports = {
             sails.log(error);
             throw error;
         }
+    },
+
+    verifyEmail: async function (user) {
+        try {
+
+            var [error, body] = await Helper.to(this.ETemplate("verification"));
+
+            if (error) {
+                throw error;
+            }
+
+            if (!body) {
+                throw "Email template not found.";
+            }
+
+            let replace_key = new RegExp('{{Name}}', 'g')
+            body = body.replace(replace_key, user.name);
+
+            replace_key = new RegExp('{{Email}}', 'g')
+            body = body.replace(replace_key, user.email);
+
+            let confirmLink = Helper.baseUrlApi() + `/email/${Helper.encrypt(user.id)}/confirm`;
+            replace_key = new RegExp('{{ConfirmEmailLink}}', 'g')
+            body = body.replace(replace_key, confirmLink);
+
+            replace_key = new RegExp('{{AddressInline}}', 'g')
+            body = body.replace(replace_key, "Futsal Yatra");
+
+            var [error, mail] = await Helper.to(this.sendEmail(user.email, "Email Verification!", body));
+            return;
+        } catch (error) {
+            sails.log(error);
+            throw error;
+        }
     }
 }
