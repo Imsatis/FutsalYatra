@@ -58,6 +58,10 @@ module.exports = {
       inputs.name = Helper.removeUrls(Helper.sanitizeHTML(Helper.html(inputs.name)));
       inputs.email = inputs.email.toLowerCase().trim();
 
+      var re = /\S+@\S+\.\S+/;
+      if (!re.test(inputs.email)) {
+        throw "Invalid email address.";
+      }
 
       var [err, userCount] = await Helper.to(Users.count({
         id: { '!=': user.id },
